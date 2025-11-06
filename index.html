@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Game Edukasi Perubahan Wujud Benda — IPAS Kelas 4</title>
+<style>
+  :root{--bg:#e6f9ff;--card:#fff;--accent:#ffd166;--primary:#0b87c9;--muted:#55707a;}
+  html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;background:linear-gradient(180deg,var(--bg),#d0f0ff)}
+  .wrap{max-width:980px;margin:18px auto;padding:18px;display:grid;gap:16px}
+  .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 10px 30px rgba(11,50,70,0.06);position:relative;overflow:hidden}
+  .hero{display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  h1{margin:0;color:var(--primary);font-size:28px}
+  p.lead{margin:0;color:var(--muted);margin-top:6px}
+  .controls{display:flex;gap:10px;margin-top:12px}
+  .btn{background:var(--accent);border:none;padding:12px 16px;border-radius:10px;font-weight:700;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,0.06)}
+  .btn.secondary{background:#fff;border:1px solid rgba(11,50,70,0.06)}
+  .icons{display:flex;gap:12px;align-items:center}
+  .icon{width:86px;height:86px;border-radius:12px;background:linear-gradient(180deg,#bfe9ff,#9ed9ff);display:flex;align-items:center;justify-content:center;font-size:40px;color:#063a53}
+  /* Material */
+  .material ul{text-align:left;margin-top:8px}
+  .muted{color:var(--muted);font-size:14px}
+  /* Quiz */
+  .quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .timer{font-weight:800;color:#c0392b}
+  .progress{height:12px;background:#e6fbff;border-radius:999px;overflow:hidden;flex:1;margin-left:12px;box-shadow:inset 0 -2px 6px rgba(0,0,0,0.02)}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),#66c3ff);width:0%}
+  .qbox{background:linear-gradient(180deg,#ffffff,#f6feff);padding:16px;border-radius:12px;border:1px solid rgba(11,50,70,0.04)}
+  .qtext{font-weight:700;color:#073b50;margin-bottom:12px;font-size:18px}
+  .choices{display:grid;gap:10px}
+  .choice{background:#f2fbff;border-radius:10px;padding:12px;border:1px solid rgba(11,50,70,0.04);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:transform .12s}
+  .choice:active{transform:scale(.99)}
+  .choice.correct{outline:3px solid rgba(60,179,113,0.12);background:#ecfff1}
+  .choice.wrong{outline:3px solid rgba(231,111,81,0.12);background:#fff6f4}
+  .result{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .trophy{width:140px;height:140px;border-radius:12px;background:linear-gradient(180deg,#ffd27a,#ffb84d);display:flex;align-items:center;justify-content:center;font-size:48px;color:#7a4510;box-shadow:0 10px 24px rgba(255,151,0,0.12)}
+  .score{font-size:48px;font-weight:800;color:var(--primary)}
+  footer{margin-top:10px;color:var(--muted);font-size:13px;text-align:center}
+  /* overlays */
+  .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .18s}
+  .overlay.show{opacity:1;pointer-events:auto}
+  .badge-large{font-size:110px;transform:translateY(10px);filter:drop-shadow(0 8px 16px rgba(0,0,0,0.12));animation:pop .7s ease}
+  @keyframes pop{0%{transform:scale(.4) translateY(20px);opacity:0}60%{transform:scale(1.08) translateY(-4px);opacity:1}100%{transform:scale(1) translateY(0)}}
+  .sad{font-size:110px;animation:shake .9s ease}
+  @keyframes shake{0%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}100%{transform:translateX(0)}}
+  @media (max-width:720px){h1{font-size:22px}.controls{flex-direction:column;align-items:stretch}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- Opening -->
+  <section id="opening" class="card" aria-label="Halaman Pembuka">
+    <div class="hero">
+      <div style="flex:1">
+        <h1>Game Edukasi Perubahan Wujud Benda — IPAS Kelas 4</h1>
+        <p class="lead">Selamat datang! Pelajari materi singkat tentang perubahan wujud benda, lalu uji pemahamanmu lewat 10 soal menarik.</p>
+        <div class="controls">
+          <button id="startBtn" class="btn">MULAI GAME</button>
+          <button id="viewMateri" class="btn secondary">LIHAT MATERI</button>
+        </div>
+      </div>
+      <div class="icons" aria-hidden="true">
+        <div class="icon">🧊</div>
+        <div class="icon" style="background:linear-gradient(180deg,#fff2c6,#ffd8a6)">💧</div>
+        <div class="icon" style="background:linear-gradient(180deg,#dff7ff,#bfe9ff)">☁️</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Material -->
+  <section id="material" class="card" style="display:none" aria-label="Materi Singkat">
+    <h2>Materi Lengkap — Perubahan Wujud Benda</h2>
+    <p class="muted"><strong>Pengertian:</strong> Perubahan wujud benda adalah perubahan bentuk suatu benda dari satu wujud ke wujud lainnya karena pengaruh suhu panas atau dingin.</p>
+    <div class="material">
+      <ul>
+        <li><strong>Mencair:</strong> padat → cair. Contoh: es menjadi air.</li>
+        <li><strong>Menguap:</strong> cair → gas. Contoh: air dipanaskan menjadi uap.</li>
+        <li><strong>Mengembun:</strong> gas → cair. Contoh: uap menempel di kaca menjadi titik-titik air.</li>
+        <li><strong>Membeku:</strong> cair → padat. Contoh: air di freezer menjadi es.</li>
+        <li><strong>Menyublim:</strong> padat → gas. Contoh: kapur barus menghilang di lemari.</li>
+        <li><strong>Mengkristal (deposisi):</strong> gas → padat. Contoh: uap menjadi kristal es di suhu sangat dingin.</li>
+      </ul>
+      <p class="muted">Kesimpulan: Perubahan wujud biasanya disebabkan oleh perubahan suhu yang memengaruhi energi partikel.</p>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:10px;justify-content:flex-end">
+      <button id="backOpening" class="btn secondary">KEMBALI</button>
+      <button id="startQuizFromMateri" class="btn">MULAI SOAL</button>
+    </div>
+  </section>
+
+  <!-- Quiz -->
+  <section id="quiz" class="card" style="display:none" aria-label="Kuis Interaktif">
+    <div class="quiz-header">
+      <div style="display:flex;flex-direction:column">
+        <div class="muted">Soal <span id="qIndex">1</span> / <span id="qTotal">10</span></div>
+        <div class="muted">Skor: <strong id="score">0</strong></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex:1;justify-content:flex-end">
+        <div id="timer" class="timer">⏱️ 60s</div>
+        <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+      </div>
+    </div>
+    <div class="qbox" role="group" aria-labelledby="qtext">
+      <div id="qtext" class="qtext">Pertanyaan</div>
+      <div id="choices" class="choices"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+      <div class="muted">Pilih jawaban. Jika waktu habis, soal otomatis berganti.</div>
+      <div style="display:flex;gap:8px">
+        <button id="nextBtn" class="btn secondary">LEWATI</button>
+      </div>
+    </div>
+    <!-- overlays for feedback -->
+    <div id="overlay" class="overlay" aria-hidden="true">
+      <div id="feedback" class="badge-large">👍</div>
+    </div>
+  </section>
+
+  <!-- Result -->
+  <section id="result" class="card" style="display:none" aria-label="Hasil Akhir">
+    <div class="result">
+      <div class="trophy">🏆</div>
+      <div style="flex:1;text-align:center">
+        <div class="muted">HASIL AKHIR</div>
+        <div class="score" id="finalScore">0</div>
+        <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+          <button id="retry" class="btn">COBA LAGI</button>
+          <button id="download" class="btn secondary">UNDUH HASIL (PNG)</button>
+        </div>
+      </div>
+    </div>
+    <footer>Selamat telah mencoba — gunakan hasil ini untuk refleksi pembelajaran.</footer>
+  </section>
+</div>
+
+<script>
+// Updated questions C4-C6
+const questions = [
+  {q:"Es krim yang dibiarkan di bawah sinar matahari akan mencair. Proses ini terjadi karena...","options":["Suhu udara menurun","Suhu udara meningkat","Udara menjadi lembap","Es krim menguap"], answer:1},
+  {q:"Jika es mencair menjadi air, dan air mendidih menjadi uap, maka perubahan apa yang terjadi secara berurutan?","options":["Mencair dan mengembun","Membeku dan menguap","Mencair dan menguap","Menyublim dan mencair"], answer:2},
+  {q:"Saat menjemur pakaian, pakaian cepat kering di siang hari. Faktor apa yang paling mempengaruhi hal tersebut?","options":["Angin bertiup kencang","Suhu udara tinggi","Kelembapan rendah","Semua jawaban benar"], answer:3},
+  {q:"Ketika membuka tutup panci saat merebus air, uap menempel di tutup panci. Uap tersebut mengalami perubahan wujud menjadi...","options":["Cair","Padat","Gas","Es"], answer:0},
+  {q:"Siswa melakukan percobaan meletakkan es di dua wadah: satu di bawah sinar matahari dan satu di kulkas. Mengapa hasilnya berbeda?","options":["Karena bentuk wadah berbeda","Karena suhu tempat berbeda","Karena jenis air berbeda","Karena ukuran es berbeda"], answer:1},
+  {q:"Yang tidak termasuk perubahan wujud karena panas adalah...","options":["Es menjadi air","Air menjadi uap","Air menjadi es","Kapur barus menyublim"], answer:2},
+  {q:"Kamu diminta membuat alat sederhana untuk menunjukkan proses penguapan. Benda apa yang paling tepat digunakan?","options":["Piring dan air","Gelas dan lilin","Baskom dan air","Kain basah dan sinar matahari"], answer:3},
+  {q:"Apa kesamaan antara proses menyublim dan menguap?","options":["Keduanya membutuhkan panas","Keduanya mengeluarkan panas","Keduanya terjadi saat suhu rendah","Keduanya berubah dari cair ke padat"], answer:0},
+  {q:"Mengapa es batu yang disimpan di freezer bisa tetap padat meskipun waktu lama?","options":["Karena suhu di freezer rendah","Karena tekanan udara tinggi","Karena udara kering","Karena tidak terkena sinar matahari"], answer:0},
+  {q:"Jika diminta membuat poster tentang 'Perubahan Wujud Benda', gambar apa yang paling tepat untuk ditampilkan?","options":["Es mencair dan air menguap","Hujan turun dari awan","Air menjadi es","Semua benar"], answer:3}
+];
+
+// DOM refs
+const opening = document.getElementById('opening');
+const material = document.getElementById('material');
+const quiz = document.getElementById('quiz');
+const result = document.getElementById('result');
+const startBtn = document.getElementById('startBtn');
+const viewMateri = document.getElementById('viewMateri');
+const backOpening = document.getElementById('backOpening');
+const startQuizFromMateri = document.getElementById('startQuizFromMateri');
+const qIndex = document.getElementById('qIndex');
+const qTotal = document.getElementById('qTotal');
+const qtext = document.getElementById('qtext');
+const choices = document.getElementById('choices');
+const timerEl = document.getElementById('timer');
+const progressBar = document.getElementById('progressBar');
+const scoreEl = document.getElementById('score');
+const nextBtn = document.getElementById('nextBtn');
+const finalScore = document.getElementById('finalScore');
+const retry = document.getElementById('retry');
+const download = document.getElementById('download');
+const overlay = document.getElementById('overlay');
+const feedback = document.getElementById('feedback');
+
+let index = 0, score = 0, selected = null;
+let timer = null, timeLeft = 60;
+
+// speech feedback
+function speak(text, lang='id-ID'){
+  try{
+    if('speechSynthesis' in window){
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = lang;
+      u.rate = 1;
+      window.speechSynthesis.cancel(); // cancel any previous
+      window.speechSynthesis.speak(u);
+    }
+  }catch(e){ console.warn('speech failed', e); }
+}
+
+// short melodic cheer using WebAudio to support speech
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function tinyChime(){
+  try{
+    if(!audioCtx) audioCtx = new AudioCtx();
+    const now = audioCtx.currentTime;
+    const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+    o.type='sine'; o.frequency.value=880;
+    g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(0.18, now+0.01); g.gain.exponentialRampToValueAtTime(0.0001, now+0.18);
+    o.connect(g); g.connect(audioCtx.destination); o.start(now); o.stop(now+0.2);
+  }catch(e){}
+}
+
+function playGoodJob(){
+  // speak "Good job!" in English and then a tiny chime
+  speak('Good job!', 'en-US');
+  tinyChime();
+}
+
+function playCobaLagi(){
+  // speak "Coba lagi!" in Indonesian and a sad tone
+  speak('Coba lagi!', 'id-ID');
+  try{
+    if(!audioCtx) audioCtx = new AudioCtx();
+    const now = audioCtx.currentTime;
+    const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+    o.type='sine'; o.frequency.value=220;
+    g.gain.setValueAtTime(0.0001, now); g.gain.exponentialRampToValueAtTime(0.18, now+0.01); g.gain.exponentialRampToValueAtTime(0.0001, now+0.28);
+    o.connect(g); g.connect(audioCtx.destination); o.start(now); o.stop(now+0.28);
+  }catch(e){}
+}
+
+// init UI
+qTotal.textContent = questions.length;
+
+// panel controls
+startBtn.addEventListener('click', ()=>{ opening.style.display='none'; material.style.display='block'; });
+viewMateri.addEventListener('click', ()=>{ opening.style.display='none'; material.style.display='block'; });
+backOpening.addEventListener('click', ()=>{ material.style.display='none'; opening.style.display='block'; });
+startQuizFromMateri.addEventListener('click', ()=>{ material.style.display='none'; quiz.style.display='block'; startQuiz(); });
+
+nextBtn.addEventListener('click', ()=>{
+  clearInterval(timer);
+  index++;
+  if(index >= questions.length) finish();
+  else showQuestion();
+});
+
+retry.addEventListener('click', ()=>{ resetAll(); opening.style.display='block'; result.style.display='none'; });
+
+download.addEventListener('click', ()=>{ downloadResultImage(); });
+
+function startQuiz(){ index=0; score=0; selected=null; showQuestion(); updateScore(); }
+
+function showQuestion(){
+  selected = null;
+  const q = questions[index];
+  qIndex.textContent = index+1;
+  qtext.textContent = q.q;
+  choices.innerHTML = '';
+  q.options.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className='choice';
+    b.setAttribute('data-i', i);
+    b.innerHTML = `<span>${String.fromCharCode(65+i)}. ${opt}</span>`;
+    b.addEventListener('click', ()=> selectAnswer(b,i));
+    choices.appendChild(b);
+  });
+  progressBar.style.width = ((index)/questions.length*100) + '%';
+  resetTimer();
+}
+
+function selectAnswer(btn,i){
+  if(btn.classList.contains('disabled')) return;
+  Array.from(choices.children).forEach(c=>{ c.classList.add('disabled'); c.style.pointerEvents='none'; });
+  clearInterval(timer);
+  selected = i;
+  const corr = questions[index].answer;
+  if(i === corr){
+    btn.classList.add('correct');
+    showOverlay(true);
+    playGoodJob();
+    score += 10;
+  } else {
+    btn.classList.add('wrong');
+    Array.from(choices.children).forEach(c=>{ if(Number(c.getAttribute('data-i'))===corr) c.classList.add('correct'); });
+    showOverlay(false);
+    playCobaLagi();
+  }
+  updateScore();
+  setTimeout(()=>{
+    index++;
+    if(index >= questions.length) finish();
+    else showQuestion();
+  }, 1000);
+}
+
+function updateScore(){ scoreEl.textContent = score; }
+
+function resetTimer(){
+  clearInterval(timer);
+  timeLeft = 60;
+  timerEl.textContent = `⏱️ ${timeLeft}s`;
+  timer = setInterval(()=>{
+    timeLeft--;
+    timerEl.textContent = `⏱️ ${timeLeft}s`;
+    if(timeLeft<=5 && timeLeft>0){
+      // quick tick to warn
+      try{ if(!audioCtx) audioCtx = new AudioCtx(); const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.frequency.value=1400; o.type='sine'; g.gain.setValueAtTime(0.0001,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.05,audioCtx.currentTime+0.01); g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.09); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.09);}catch(e){}
+    }
+    if(timeLeft<=0){
+      clearInterval(timer);
+      // reveal correct answer briefly
+      const corr = questions[index].answer;
+      Array.from(choices.children).forEach(c=>{
+        c.classList.add('disabled'); c.style.pointerEvents='none';
+        if(Number(c.getAttribute('data-i'))===corr) c.classList.add('correct');
+      });
+      showOverlay(false); playCobaLagi();
+      setTimeout(()=>{
+        index++;
+        if(index >= questions.length) finish();
+        else showQuestion();
+      }, 900);
+    }
+  },1000);
+}
+
+function finish(){
+  clearInterval(timer);
+  quiz.style.display='none';
+  result.style.display='block';
+  finalScore.textContent = score;
+}
+
+// overlay visuals
+function showOverlay(isCorrect){
+  overlay.classList.add('show');
+  feedback.textContent = isCorrect ? '👍' : '😭';
+  feedback.className = isCorrect ? 'badge-large' : 'badge-large sad';
+  // hide after a short while
+  setTimeout(()=>{ overlay.classList.remove('show'); }, 900);
+}
+
+function resetAll(){ index=0; score=0; selected=null; updateScore(); }
+
+// download result as SVG image
+function downloadResultImage(){
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='900' height='500'>
+  <rect width='100%' height='100%' fill='#e6f9ff'/>
+  <text x='50%' y='20%' font-size='28' fill='#0b87c9' text-anchor='middle' font-weight='700'>Hasil Permainan — Perubahan Wujud Benda</text>
+  <text x='50%' y='50%' font-size='80' text-anchor='middle'>🏆</text>
+  <text x='50%' y='78%' font-size='56' text-anchor='middle' fill='#073b50' font-weight='700'>Skor: ${score}</text>
+  </svg>`;
+  const blob = new Blob([svg],{type:'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'hasil_skor_perubahan_wujud_benda.svg'; document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// init panels
+opening.style.display='block'; material.style.display='none'; quiz.style.display='none'; result.style.display='none';
+</script>
+</body>
+</html>
